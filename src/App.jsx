@@ -29,7 +29,6 @@ export default function App() {
     setScore(0);
     setStatus('idle');
     setRestartKey((k) => k + 1);
-    // User will press Start again to run
   }, []);
 
   return (
