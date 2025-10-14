@@ -193,19 +193,20 @@ export default function GameCanvas({ status, onStart, onScore, onGameOver, start
     p.trail.unshift({ x: p.x + p.w / 2, y: p.y + p.h });
     if (p.trail.length > 12) p.trail.pop();
 
-    // Spawn obstacles: same size as player (small variance), different color
+    // Spawn obstacles: similar size to player (tiny variance), different color
     g.spawnCooldown -= 1;
     if (g.spawnCooldown <= 0) {
       const laneW = road.w / road.lanes;
       const laneIndex = Math.floor(rng() * road.lanes);
-      const sizeVarW = 0.95 + rng() * 0.1;
-      const sizeVarH = 0.95 + rng() * 0.1;
-      const carW = p.w * sizeVarW;
-      const carH = p.h * sizeVarH;
+      const sizeVar = 0.95 + rng() * 0.1; // 5% variance
+      const carW = p.w * sizeVar;
+      const carH = p.h * sizeVar;
       const ox = road.x + laneW * laneIndex + (laneW - carW) / 2;
       const speed = g.speed * (1.1 + rng() * 0.8);
       const colorPool = ['#22d3ee', '#a78bfa', '#f472b6', '#f59e0b', '#10b981'];
-      const color = colorPool[Math.floor(rng() * colorPool.length)];
+      // ensure different from player color
+      const filtered = colorPool.filter(c => c.toLowerCase() !== '#34d399');
+      const color = filtered[Math.floor(rng() * filtered.length)] || '#22d3ee';
       g.obstacles.push({ x: ox, y: -carH - 20, w: carW, h: carH, vy: speed, color, trail: [] });
       g.spawnCooldown = Math.max(15, 60 - Math.floor(g.time * 0.02));
     }
